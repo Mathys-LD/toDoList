@@ -1,0 +1,17 @@
+.toDo{
+    color: red;
+    .td;
+}
+.Done{
+    color: green;
+    .td;
+}
+
+
+td{
+    border: 1px solid black;
+}
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    align-content: center;
+}
