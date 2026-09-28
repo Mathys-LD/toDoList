@@ -1,27 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List - Gestion de Tâches</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <form id="taskForm" action="">
-        <label for="taskDescription">Tache:   </label><br>
-        <input type="text" id="taskDescription" name="taskDescription"><br><br>
-        <input type="button" value="Ajouter" id="submitButton">
-    </form>
-    <br><br>
-    <table id="taskTable">
-        <thead>
-            <tr>
-                <th>Statut</th>
-                <th>Tache</th>
-            </tr>
-        </thead>
-        <tbody id="taskTableBody">
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Ma To Do List</h1>
+        
+        <!-- Formulaire d'ajout de tâche -->
+        <div class="formulaire-ajout">
+            <input 
+                type="text" 
+                id="champSaisie" 
+                placeholder="Ajouter une nouvelle tâche..."
+                autocomplete="off">
+            <button id="boutonAjouter">Ajouter</button>
+        </div>
+
+        <!-- Compteur de tâches -->
+        <div class="compteur">
+            <p>Tâches restantes: <span id="compteurTaches">0</span></p>
+        </div>
+
+        <!-- Liste des tâches -->
+        <div id="listeTaches" class="liste-taches">
+            <!-- Les tâches seront générées ici par JavaScript -->
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
