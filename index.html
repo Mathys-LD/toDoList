@@ -3,34 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Do List - Gestion de Tâches</title>
+    <title>To Do List - Gestion de Tâches (API REST)</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Ma To Do List</h1>
-        
-        <!-- Formulaire d'ajout de tâche -->
-        <div class="formulaire-ajout">
-            <input 
-                type="text" 
-                id="champSaisie" 
+<div class="container">
+    <h1>Ma To Do List</h1>
+    <p class="sous-titre">Connectée à une API Node.js + Express</p>
+
+    <!-- Formulaire d'ajout de tâche -->
+    <div class="formulaire-ajout">
+        <input
+                type="text"
+                id="champSaisie"
                 placeholder="Ajouter une nouvelle tâche..."
                 autocomplete="off">
-            <button id="boutonAjouter">Ajouter</button>
-        </div>
-
-        <!-- Compteur de tâches -->
-        <div class="compteur">
-            <p>Tâches restantes: <span id="compteurTaches">0</span></p>
-        </div>
-
-        <!-- Liste des tâches -->
-        <div id="listeTaches" class="liste-taches">
-            <!-- Les tâches seront générées ici par JavaScript -->
-        </div>
+        <button id="boutonAjouter">Ajouter</button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Compteur de tâches -->
+    <div class="compteur">
+        <p>Tâches restantes: <span id="compteurTaches">0</span></p>
+    </div>
+
+    <!-- Liste des tâches -->
+    <div id="listeTaches" class="liste-taches">
+        <!-- Les tâches seront générées ici par JavaScript -->
+    </div>
+</div>
+
+<!-- Script qui communique avec l'API -->
+<script src="script-api.js"></script>
 </body>
 </html>

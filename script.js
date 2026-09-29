@@ -1,58 +1,126 @@
-// ========== DONNÉES ==========
-// Tableau pour stocker les tâches sous forme d'objets
-let listeTaches = [];
-let idCompteur = 0;
-
-// ========== CLASSE TÂCHE ==========
 /**
- * Classe représentant une tâche
- * @param {number} id - Identifiant unique de la tâche
- * @param {string} texte - Description de la tâche
- * @param {boolean} terminee - Statut de completion (false par défaut = à faire)
+ * Frontend JavaScript pour Todo List
+ * Communique avec le serveur Express via l'API REST
  */
-class Tache {
-    constructor(id, texte, terminee = false) {
-        this.id = id;
-        this.texte = texte;
-        this.terminee = terminee;
-    }
-}
 
-// ========== GESTION DU DOM ==========
+// ========== CONFIGURATION API ==========
+const URL_API = 'http://localhost:3000/api/taches';
+
+// ========== VARIABLES GLOBALES ==========
+let listeTaches = [];
+
+// ========== ÉLÉMENTS DU DOM ==========
 const champSaisie = document.getElementById("champSaisie");
 const boutonAjouter = document.getElementById("boutonAjouter");
 const listeTachesDiv = document.getElementById("listeTaches");
 const compteurElement = document.getElementById("compteurTaches");
 
-// ========== FONCTIONS PRINCIPALES ==========
+// ========== FONCTIONS API (FETCH) ==========
 
 /**
- * Ajoute une nouvelle tâche à la liste
- * Valide que le champ n'est pas vide
+ * Récupère toutes les tâches depuis le serveur
  */
-function ajouterTache() {
+async function chargerTaches() {
+    try {
+        const reponse = await fetch(URL_API);
+        if (!reponse.ok) {
+            throw new Error('Erreur lors du chargement des tâches');
+        }
+        listeTaches = await reponse.json();
+        afficherTaches();
+    } catch (erreur) {
+        console.error('Erreur:', erreur);
+        listeTachesDiv.innerHTML = '<p class="erreur">❌ Erreur de connexion au serveur</p>';
+    }
+}
+
+/**
+ * Ajoute une nouvelle tâche au serveur
+ */
+async function ajouterTache() {
     const texte = champSaisie.value.trim();
 
-    // Validation : le texte ne doit pas être vide
+    // Validation
     if (texte === "") {
         alert("Veuillez entrer une tâche valide!");
         return;
     }
 
-    // Créer un nouvel objet tâche
-    const nouvelleTache = new Tache(idCompteur, texte, false);
-    
-    // Ajouter à la liste
-    listeTaches.push(nouvelleTache);
-    idCompteur++;
+    try {
+        const reponse = await fetch(URL_API, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ texte: texte })
+        });
 
-    // Vider le champ de saisie
-    champSaisie.value = "";
-    champSaisie.focus();
+        if (!reponse.ok) {
+            throw new Error('Erreur lors de l\'ajout de la tâche');
+        }
 
-    // Mettre à jour l'affichage
-    afficherTaches();
+        // Vider le champ et recharger la liste
+        champSaisie.value = "";
+        champSaisie.focus();
+        await chargerTaches();
+    } catch (erreur) {
+        console.error('Erreur:', erreur);
+        alert('Erreur: impossible d\'ajouter la tâche');
+    }
 }
+
+/**
+ * Bascule l'état de completion d'une tâche (terminée/non-terminée)
+ * @param {number} id - ID de la tâche
+ */
+async function basculerTache(id) {
+    const tache = listeTaches.find(t => t.id === id);
+    if (!tache) return;
+
+    try {
+        const reponse = await fetch(`${URL_API}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ terminee: !tache.terminee })
+        });
+
+        if (!reponse.ok) {
+            throw new Error('Erreur lors de la mise à jour');
+        }
+
+        // Recharger la liste
+        await chargerTaches();
+    } catch (erreur) {
+        console.error('Erreur:', erreur);
+        alert('Erreur: impossible de mettre à jour la tâche');
+    }
+}
+
+/**
+ * Supprime une tâche du serveur
+ * @param {number} id - ID de la tâche
+ */
+async function supprimerTache(id) {
+    try {
+        const reponse = await fetch(`${URL_API}/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!reponse.ok) {
+            throw new Error('Erreur lors de la suppression');
+        }
+
+        // Recharger la liste
+        await chargerTaches();
+    } catch (erreur) {
+        console.error('Erreur:', erreur);
+        alert('Erreur: impossible de supprimer la tâche');
+    }
+}
+
+// ========== FONCTIONS D'AFFICHAGE ==========
 
 /**
  * Affiche toutes les tâches de la liste
@@ -85,13 +153,13 @@ function afficherTaches() {
 
 /**
  * Crée un élément DOM pour une tâche
- * @param {Tache} tache - L'objet tâche
+ * @param {Object} tache - L'objet tâche
  * @returns {HTMLElement} - L'élément div contenant la tâche
  */
 function creerElementTache(tache) {
     const div = document.createElement("div");
     div.className = "tache";
-    
+
     // Ajouter la classe "terminee" si la tâche est complétée
     if (tache.terminee) {
         div.classList.add("terminee");
@@ -126,27 +194,6 @@ function creerElementTache(tache) {
 }
 
 /**
- * Bascule l'état de completion d'une tâche (terminée/non-terminée)
- * @param {number} id - L'id de la tâche à basculer
- */
-function basculerTache(id) {
-    const tache = listeTaches.find(t => t.id === id);
-    if (tache) {
-        tache.terminee = !tache.terminee;
-        afficherTaches();
-    }
-}
-
-/**
- * Supprime une tâche de la liste
- * @param {number} id - L'id de la tâche à supprimer
- */
-function supprimerTache(id) {
-    listeTaches = listeTaches.filter(t => t.id !== id);
-    afficherTaches();
-}
-
-/**
  * Met à jour le compteur de tâches restantes (non-terminées)
  */
 function mettreAJourCompteur() {
@@ -166,5 +213,7 @@ champSaisie.addEventListener("keypress", function(e) {
     }
 });
 
-// Initialiser l'affichage au chargement
-afficherTaches();
+// ========== INITIALISATION ==========
+
+// Charger les tâches au démarrage
+chargerTaches();

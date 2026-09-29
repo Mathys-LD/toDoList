@@ -1,0 +1,22 @@
+{
+  "name": "todolist-api",
+  "version": "1.0.0",
+  "description": "API REST pour une application de gestion de tâches (Todo List)",
+  "main": "serveur.js",
+  "scripts": {
+    "start": "node serveur.js",
+    "dev": "node serveur.js"
+  },
+  "keywords": [
+    "todo",
+    "express",
+    "api",
+    "rest"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
