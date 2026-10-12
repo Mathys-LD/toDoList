@@ -73,6 +73,20 @@ h1 {
 #boutonAjouter:active {
     transform: scale(0.98);
 }
+/* ========== BOUTON FILTRER ==== */
+
+.boutonFiltrer{
+    padding: 12px 25px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
 
 /* ========== COMPTEUR ========== */
 

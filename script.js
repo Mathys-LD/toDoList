@@ -2,6 +2,7 @@
 // Tableau pour stocker les tâches sous forme d'objets
 let listeTaches = [];
 let idCompteur = 0;
+let regleFiltrage = 0;
 
 // ========== CLASSE TÂCHE ==========
 /**
@@ -23,6 +24,9 @@ const champSaisie = document.getElementById("champSaisie");
 const boutonAjouter = document.getElementById("boutonAjouter");
 const listeTachesDiv = document.getElementById("listeTaches");
 const compteurElement = document.getElementById("compteurTaches");
+const boutonFiltrerFait = document.getElementById("boutonFiltrerFait");
+const boutonFiltrerNonFait = document.getElementById("boutonFiltrerNonFait");
+const boutonNonFiltrer = document.getElementById("boutonNonFiltrer")
 
 // ========== FONCTIONS PRINCIPALES ==========
 
@@ -71,13 +75,37 @@ function afficherTaches() {
 
     // Utiliser map() pour créer les éléments HTML (requis par les spécifications)
     const elementsTaches = listeTaches.map(function(tache) {
-        return creerElementTache(tache);
+        if (tache.terminee===true && regleFiltrage === 1){
+            console.log("fait");
+            return creerElementTache(tache);
+        } else {
+            console.log("non")
+        }
+        if (tache.terminee===false && regleFiltrage === 2){
+            console.log("pas fait");
+            return creerElementTache(tache);
+        } else {
+            console.log("non")
+        }
+        if (regleFiltrage === 0){
+            console.log("pas filtre");
+            return creerElementTache(tache);
+        } else {
+            console.log("non")
+        }
+        creerElementTache(Tache(-1, "", false));
+
+
+        //return creerElementTache(tache);
+
+
+
     });
 
     // Ajouter tous les éléments au DOM
     elementsTaches.forEach(element => {
         listeTachesDiv.appendChild(element);
-    });
+        });
 
     // Mettre à jour le compteur
     mettreAJourCompteur();
@@ -89,6 +117,11 @@ function afficherTaches() {
  * @returns {HTMLElement} - L'élément div contenant la tâche
  */
 function creerElementTache(tache) {
+    console.log(tache);
+    if (tache.id===-1){
+        console.log(tache.id);
+        return;
+    }
     const div = document.createElement("div");
     div.className = "tache";
     
@@ -121,7 +154,6 @@ function creerElementTache(tache) {
     div.appendChild(checkbox);
     div.appendChild(label);
     div.appendChild(boutonSupprimer);
-
     return div;
 }
 
@@ -165,6 +197,30 @@ champSaisie.addEventListener("keypress", function(e) {
         ajouterTache();
     }
 });
+
+
+//Evenement : clic sur le bouton "Toutes"
+
+boutonNonFiltrer.addEventListener("click", function(e) {
+    regleFiltrage=0;
+    afficherTaches();
+})
+
+//Evenment : clic sur le bouton "En cours"
+
+boutonFiltrerNonFait.addEventListener("click", function(e) {
+    regleFiltrage=2;
+    afficherTaches();
+})
+
+//Evenement : clic sur le bouton "Terminées"
+
+boutonFiltrerFait.addEventListener("click", function(e) {
+    regleFiltrage=1;
+    afficherTaches();
+})
+
+
 
 // Initialiser l'affichage au chargement
 afficherTaches();
