@@ -74,32 +74,14 @@ function afficherTaches() {
     }
 
     // Utiliser map() pour créer les éléments HTML (requis par les spécifications)
-    const elementsTaches = listeTaches.map(function(tache) {
-        if (tache.terminee===true && regleFiltrage === 1){
-            console.log("fait");
-            return creerElementTache(tache);
-        } else {
-            console.log("non")
-        }
-        if (tache.terminee===false && regleFiltrage === 2){
-            console.log("pas fait");
-            return creerElementTache(tache);
-        } else {
-            console.log("non")
-        }
-        if (regleFiltrage === 0){
-            console.log("pas filtre");
-            return creerElementTache(tache);
-        } else {
-            console.log("non")
-        }
-        creerElementTache(Tache(-1, "", false));
+    const tachesFiltrees = listeTaches.filter(function(tache) {
+        if (regleFiltrage === 1) return tache.terminee === true;
+        if (regleFiltrage === 2) return tache.terminee === false;
+        return true;
+    });
 
-
-        //return creerElementTache(tache);
-
-
-
+    const elementsTaches = tachesFiltrees.map(function(tache) {
+        return creerElementTache(tache);
     });
 
     // Ajouter tous les éléments au DOM
@@ -110,6 +92,50 @@ function afficherTaches() {
     // Mettre à jour le compteur
     mettreAJourCompteur();
 }
+
+
+/**
+ * Permet de modifier le texte d'une tâche en double-cliquant dessus
+ * @param {HTMLElement} label - L'élément affichant le texte
+ * @param {Tache} tache - L'objet tâche associé
+ */
+function activerEdition(label, tache) {
+    label.addEventListener("dblclick", function() {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = tache.texte;
+        input.className = "champ-edition";
+
+        let termine = false; // évite un double traitement (Entrée + blur)
+
+        function valider() {
+            if (termine) return;
+            termine = true;
+            const nouveauTexte = input.value.trim();
+            if (nouveauTexte !== "") {
+                tache.texte = nouveauTexte;
+            }
+            afficherTaches();
+        }
+
+        function annuler() {
+            if (termine) return;
+            termine = true;
+            afficherTaches();
+        }
+
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") valider();
+            if (e.key === "Escape") annuler();
+        });
+        input.addEventListener("blur", valider);
+
+        label.replaceWith(input);
+        input.focus();
+        input.select();
+    });
+}
+
 
 /**
  * Crée un élément DOM pour une tâche
@@ -141,6 +167,7 @@ function creerElementTache(tache) {
     // Créer le label (texte de la tâche)
     const label = document.createElement("label");
     label.textContent = tache.texte;
+    activerEdition(label, tache);
 
     // Créer le bouton de suppression
     const boutonSupprimer = document.createElement("button");
@@ -154,6 +181,7 @@ function creerElementTache(tache) {
     div.appendChild(checkbox);
     div.appendChild(label);
     div.appendChild(boutonSupprimer);
+
     return div;
 }
 
@@ -182,8 +210,7 @@ function supprimerTache(id) {
  * Met à jour le compteur de tâches restantes (non-terminées)
  */
 function mettreAJourCompteur() {
-    const tachesRestantes = listeTaches.filter(t => !t.terminee).length;
-    compteurElement.textContent = tachesRestantes;
+    compteurElement.textContent = listeTaches.filter(t => !t.terminee).length;
 }
 
 // ========== ÉVÉNEMENTS ==========
@@ -201,21 +228,21 @@ champSaisie.addEventListener("keypress", function(e) {
 
 //Evenement : clic sur le bouton "Toutes"
 
-boutonNonFiltrer.addEventListener("click", function(e) {
+boutonNonFiltrer.addEventListener("click", function() {
     regleFiltrage=0;
     afficherTaches();
 })
 
 //Evenment : clic sur le bouton "En cours"
 
-boutonFiltrerNonFait.addEventListener("click", function(e) {
+boutonFiltrerNonFait.addEventListener("click", function() {
     regleFiltrage=2;
     afficherTaches();
 })
 
 //Evenement : clic sur le bouton "Terminées"
 
-boutonFiltrerFait.addEventListener("click", function(e) {
+boutonFiltrerFait.addEventListener("click", function() {
     regleFiltrage=1;
     afficherTaches();
 })

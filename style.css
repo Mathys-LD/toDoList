@@ -1,4 +1,31 @@
-/* ========== STYLES GÉNÉRAUX ========== */
+/* ==========================================================
+   TO DO LIST
+   1. Variables   2. Base   3. Formulaires et boutons
+   4. Compteur    5. Liste des tâches   6. Responsive
+   ========================================================== */
+
+/* ========== 1. VARIABLES ========== */
+
+:root {
+    --violet: #6F2DA8;
+    --violet-fonce: #5a2388;
+    --violet-pale: #f3ebfa;
+    --jaune: #FFF200;
+
+    --texte: #2b2b2b;
+    --texte-doux: #6b6b6b;
+    --fond: #ffffff;
+    --fond-doux: #f7f5fa;
+    --bordure: #e3e0e8;
+
+    --danger: #d64545;
+    --danger-fonce: #b83232;
+
+    --rayon: 6px;
+    --transition: 0.2s ease;
+}
+
+/* ========== 2. BASE ========== */
 
 * {
     margin: 0;
@@ -8,7 +35,9 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(-45deg, #FFF200, 20%, #6F2DA8 100%);
+    color: var(--texte);
+    background: linear-gradient(-45deg, var(--jaune) 20%, var(--violet) 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -17,22 +46,28 @@ body {
 }
 
 .container {
-    background: white;
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background: var(--fond);
     border-radius: 10px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    padding: 30px;
-    max-width: 500px;
-    width: 100%;
 }
 
 h1 {
-    text-align: center;
-    color: #333;
     margin-bottom: 25px;
+    text-align: center;
     font-size: 28px;
+    color: var(--texte);
 }
 
-/* ========== FORMULAIRE D'AJOUT ========== */
+/* Contour visible pour la navigation au clavier */
+:focus-visible {
+    outline: 3px solid var(--violet);
+    outline-offset: 2px;
+}
+
+/* ========== 3. FORMULAIRES ET BOUTONS ========== */
 
 .formulaire-ajout {
     display: flex;
@@ -40,77 +75,89 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Champ de saisie principal */
 #champSaisie {
     flex: 1;
+    min-width: 0;
     padding: 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: 5px;
+    border: 2px solid var(--bordure);
+    border-radius: var(--rayon);
     font-size: 16px;
-    transition: border-color 0.3s;
+    font-family: inherit;
+    transition: border-color var(--transition);
 }
 
 #champSaisie:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--violet);
 }
 
+/* Bouton principal : plein */
 #boutonAjouter {
     padding: 12px 25px;
-    background: #667eea;
-    color: white;
+    background: var(--violet);
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--rayon);
     font-size: 16px;
     font-weight: bold;
+    font-family: inherit;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background var(--transition), transform var(--transition);
 }
 
 #boutonAjouter:hover {
-    background: #5568d3;
+    background: var(--violet-fonce);
 }
 
 #boutonAjouter:active {
     transform: scale(0.98);
 }
-/* ========== BOUTON FILTRER ==== */
 
-.boutonFiltrer{
-    padding: 12px 25px;
-    background: #667eea;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
+/* Boutons de filtrage : secondaires, contour seulement */
+.boutonFiltrer {
+    flex: 1;
+    padding: 10px 12px;
+    background: transparent;
+    color: var(--violet);
+    border: 2px solid var(--violet);
+    border-radius: var(--rayon);
+    font-size: 15px;
     font-weight: bold;
+    font-family: inherit;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background var(--transition), color var(--transition);
 }
 
+.boutonFiltrer:hover {
+    background: var(--violet-pale);
+}
 
-/* ========== COMPTEUR ========== */
+/* Filtre actuellement sélectionné (voir la classe "actif" en JS) */
+.boutonFiltrer.actif {
+    background: var(--violet);
+    color: #fff;
+}
+
+/* ========== 4. COMPTEUR ========== */
 
 .compteur {
-    background: #f0f0f0;
-    padding: 15px;
-    border-radius: 5px;
     margin-bottom: 20px;
+    padding: 15px;
+    background: var(--fond-doux);
+    border-radius: var(--rayon);
     text-align: center;
-    color: #555;
-    font-weight: 500;
-}
-
-.compteur p {
     font-size: 16px;
+    color: var(--texte-doux);
 }
 
 #compteurTaches {
     font-size: 20px;
     font-weight: bold;
-    color: #667eea;
+    color: var(--violet);
 }
 
-/* ========== LISTE DES TÂCHES ========== */
+/* ========== 5. LISTE DES TÂCHES ========== */
 
 .liste-taches {
     display: flex;
@@ -123,102 +170,129 @@ h1 {
     align-items: center;
     gap: 12px;
     padding: 15px;
-    background: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    transition: all 0.3s;
+    background: var(--fond-doux);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+    transition: border-color var(--transition), background var(--transition);
 }
 
 .tache:hover {
-    background: #f5f5f5;
-    border-color: #667eea;
+    border-color: var(--violet);
 }
 
 .tache input[type="checkbox"] {
+    flex-shrink: 0;
     width: 20px;
     height: 20px;
     cursor: pointer;
-    accent-color: #667eea;
-    flex-shrink: 0;
+    accent-color: var(--violet);
 }
 
+/* Texte de la tâche (double-clic pour modifier) */
 .tache label {
     flex: 1;
-    cursor: pointer;
-    user-select: none;
-    color: #333;
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-size: 16px;
+    color: var(--texte);
+    cursor: text;
+    user-select: none;
 }
 
-/* Style pour les tâches terminées */
+/* Champ affiché pendant la modification */
+.tache .champ-edition {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 10px;
+    border: 2px solid var(--violet);
+    border-radius: var(--rayon);
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--texte);
+    background: #fff;
+}
+
+.tache .champ-edition:focus {
+    outline: none;
+    border-color: var(--violet-fonce);
+}
+
+/* Tâche terminée */
 .tache.terminee {
-    background: #f0f0f0;
-    border-color: #ccc;
+    background: #efedf2;
 }
 
 .tache.terminee label {
-    color: #999;
+    color: var(--texte-doux);
     text-decoration: line-through;
 }
 
-/* ========== BOUTON SUPPRIMER ========== */
-
+/* Bouton supprimer : discret, rouge au survol */
 .bouton-supprimer {
-    padding: 8px 14px;
-    background: #ff6b6b;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.3s;
     flex-shrink: 0;
+    padding: 7px 12px;
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    border-radius: var(--rayon);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
 }
 
 .bouton-supprimer:hover {
-    background: #ff5252;
+    background: var(--danger);
+    color: #fff;
 }
 
 .bouton-supprimer:active {
-    transform: scale(0.95);
+    background: var(--danger-fonce);
+    border-color: var(--danger-fonce);
 }
 
-/* ========== MESSAGE VIDE ========== */
-
+/* Message quand la liste est vide */
 .aucune-tache {
-    text-align: center;
-    color: #999;
     padding: 40px 20px;
+    text-align: center;
     font-size: 16px;
+    color: var(--texte-doux);
 }
 
-/* ========== RESPONSIVE ========== */
+/* ========== 6. RESPONSIVE ========== */
 
 @media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+
     .container {
         padding: 20px;
     }
 
     h1 {
-        font-size: 24px;
         margin-bottom: 20px;
+        font-size: 24px;
     }
 
-    .formulaire-ajout {
-        flex-direction: column;
-    }
-
-    #champSaisie,
     #boutonAjouter {
-        width: 100%;
+        padding: 12px 18px;
+    }
+
+    .boutonFiltrer {
+        padding: 10px 6px;
+        font-size: 14px;
     }
 
     .tache {
-        flex-wrap: wrap;
+        padding: 12px;
+        gap: 10px;
     }
+}
 
-    .tache label {
-        flex-basis: 100%;
-        order: 3;
+/* Respecte le réglage "réduire les animations" du système */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
     }
 }
